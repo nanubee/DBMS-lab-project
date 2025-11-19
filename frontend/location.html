@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cab Booking System</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: flex-start; /* Align to top */
+            background-color: #2d333b; /* Dark background color */
+            color: #ffffff; /* White text */
+            padding-top: 30px; /* Spacing at the top */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            position: relative; /* Relative positioning for the container */
+            margin-top: 30px;  /* Increased margin for spacing between elements */
+        }
+
+        label {
+            font-size: 18px;
+            display: block; /* Ensure labels are on their own line */
+        }
+
+        input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #859F3D;
+            color: #2d333b;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 20px;
+            margin-top: 40px; /* Additional margin for the button */
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #859F3D; /* Darker yellow on hover */
+        }
+
+        .suggestions {
+            background-color: #ffffff;
+            color: #000000;
+            position: absolute;
+            top: 100%; /* Position directly below the input field */
+            left: 0;
+            width: 100%; /* Full width of the input container */
+            max-height: 150px;
+            overflow-y: auto;
+            border-radius: 4px;
+            border: 1px solid #cccccc;
+            z-index: 1000; /* Ensure suggestions are on top */
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Your Cab</h1>
+    
+    <div class="input-container">
+        <label for="pickup">Pickup Location:</label>
+        <input type="text" id="pickup" placeholder="Enter pickup location" oninput="getSuggestions(this.value, 'pickupSuggestions')">
+        <div id="pickupSuggestions" class="suggestions"></div>
+    </div>
+
+    <div class="input-container">
+        <label for="dropoff">Drop-off Location:</label>
+        <input type="text" id="dropoff" placeholder="Enter drop-off location" oninput="getSuggestions(this.value, 'dropoffSuggestions')">
+        <div id="dropoffSuggestions" class="suggestions"></div>
+    </div>
+
+    <button onclick="bookCab()">Book Now</button>
+
+    <script>
+        let pickupLat, pickupLng, dropoffLat, dropoffLng;
+
+        function getSuggestions(query, suggestionsId) {
+            const suggestionsContainer = document.getElementById(suggestionsId);
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+            if (query.length < 3) {
+                return; // Only search if query length is 3 or more
+            }
+
+            // LocationIQ API URL
+            const token = "pk.00ab66b654bf58df9b322b671da7a38b"; // Replace with your actual token
+            const url = `https://us1.locationiq.com/v1/search.php?key=${token}&q=${encodeURIComponent(query + ', India')}&format=json&addressdetails=1&limit=5`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length === 0) {
+                        suggestionsContainer.innerHTML = '<div class="suggestion-item">No locations found</div>';
+                        return;
+                    }
+                    data.forEach(location => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.textContent = location.display_name;
+                        suggestionItem.onclick = () => {
+                            const selectedLocation = location;
+                            document.getElementById(suggestionsId === 'pickupSuggestions' ? 'pickup' : 'dropoff').value = selectedLocation.display_name;
+                            suggestionsContainer.innerHTML = ''; // Clear suggestions after selection
+
+                            // Store coordinates for pickup or dropoff
+                            if (suggestionsId === 'pickupSuggestions') {
+                                pickupLat = selectedLocation.lat;
+                                pickupLng = selectedLocation.lon;
+                            } else {
+                                dropoffLat = selectedLocation.lat;
+                                dropoffLng = selectedLocation.lon;
+                            }
+                        };
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching location data:', error);
+                    suggestionsContainer.innerHTML = '<div class="suggestion-item">Error fetching suggestions</div>';
+                });
+        }
+
+        function bookCab() {
+            if (!pickupLat || !pickupLng || !dropoffLat || !dropoffLng) {
+                alert('Please select both pickup and drop-off locations.');
+                return;
+            }
+            
+            // Redirect to the map page with coordinates
+            window.location.href = `map.html?pickupLat=${pickupLat}&pickupLng=${pickupLng}&dropoffLat=${dropoffLat}&dropoffLng=${dropoffLng}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+            background-color: #2d333b;
+            color: #ffffff;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #000000;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #000000;
+        }
+
+        .profile-container {
+            text-align: left;
+            margin-top: 50px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .profile-detail {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .action-button {
+            background-color: #859F3D;
+            color: #2d333b;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #859F3D;
+        }
+
+        .button-container {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="title">
+        &#128100; User Profile
+    </div>
+</header>
+
+<div class="profile-container">
+    <p class="profile-detail" id="user-name">Name: Loading...</p>
+    <p class="profile-detail" id="user-email">Email: Loading...</p>
+
+    <div class="button-container">
+        <button class="action-button" onclick="editProfile()">Edit Profile</button>
+        <button class="action-button" onclick="viewActivity()">View Past Activity</button>
+    </div>
+</div>
+
+<script>
+    // Fetch user profile data from the PHP script
+    fetch('profile.php')  // Path to the PHP script that fetches user data
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error); // Handle error (if user not found or not logged in)
+            } else {
+                // Dynamically update the page with user details
+                document.getElementById('user-name').innerText = 'Name: ' + data.name;
+                document.getElementById('user-email').innerText = 'Email: ' + data.email;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+
+    // Redirect functions for buttons
+    function editProfile() {
+        window.location.href = "edit-profile.html"; // Redirect to edit profile page
+    }
+
+    function viewActivity() {
+        window.location.href = "past-activity.html"; // Redirect to past activity page
+    }
+</script>
+
+</body>
+</html>
+
+
+

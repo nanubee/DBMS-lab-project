@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cab Booking System - Route</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2d333b;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    #map {
+      height: 80vh;
+      width: 100%;
+      max-width: 900px; /* Limit map width */
+      margin-bottom: 20px;
+    }
+
+    .price {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #859F3D;
+      color: #2d333b;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #F6FCDF;
+    }
+  </style>
+</head>
+<body>
+  <h1>Route and Pricing</h1>
+  <div id="map"></div>
+  <div class="price" id="price">Estimated Price: Loading...</div>
+  <button onclick="proceedBooking()">Proceed to Preferences</button>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    // Step 1: Get URL Parameters (pickup and drop-off coordinates)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pickupLat = parseFloat(urlParams.get('pickupLat'));
+    const pickupLng = parseFloat(urlParams.get('pickupLng'));
+    const dropoffLat = parseFloat(urlParams.get('dropoffLat'));
+    const dropoffLng = parseFloat(urlParams.get('dropoffLng'));
+
+    // Step 2: Initialize the Map using Leaflet
+    const map = L.map('map').setView([pickupLat, pickupLng], 13);
+
+    // Add Tile Layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Step 3: Add Markers for Pickup and Drop-off
+    L.marker([pickupLat, pickupLng]).addTo(map).bindPopup('Pickup Location').openPopup();
+    L.marker([dropoffLat, dropoffLng]).addTo(map).bindPopup('Drop-off Location').openPopup();
+
+    // Step 4: Define route URL
+    const routeUrl = `route-proxy.php?pickupLat=${pickupLat}&pickupLng=${pickupLng}&dropoffLat=${dropoffLat}&dropoffLng=${dropoffLng}`;
+
+    // Step 5: Fetch Route Data from OpenRouteService via PHP proxy
+    fetch(routeUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.features && data.features.length > 0) {
+          const routeCoordinates = data.features[0].geometry.coordinates;
+          const distance = data.features[0].properties.segments[0].distance / 1000; // Convert to kilometers
+          const duration = data.features[0].properties.segments[0].duration / 60; // Convert to minutes
+
+          console.log('Route Coordinates:', routeCoordinates);
+          console.log('Distance (km):', distance);
+          console.log('Duration (min):', duration);
+
+          // Plot the route on the map
+          L.polyline(routeCoordinates.map(coord => [coord[1], coord[0]]), { color: '#0096FF', weight: 7 }).addTo(map);
+
+          // Calculate and display the price
+          const price = calculatePrice(distance, duration);
+          document.getElementById('price').textContent = `Estimated Price: ₹${price.toFixed(2)}`;
+        } else {
+          console.log('No routes found for the provided coordinates.');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching route:', error);
+      });
+
+    // Step 8: Function to calculate price based on distance and time
+    function calculatePrice(distance, time) {
+      const baseFare = 50; // Base fare in ₹
+      const perKmFare = 15; // Price per kilometer in ₹
+      const perMinFare = 2; // Price per minute in ₹
+      return baseFare + (perKmFare * distance) + (perMinFare * time);
+    }
+
+    // Step 9: Handle booking action
+    function proceedBooking() {
+      window.location.href = "preferences.html"; // Redirect to the preferences page
+    }
+  </script>
+</body>
+</html>

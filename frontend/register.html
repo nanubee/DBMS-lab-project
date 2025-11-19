@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a New Account</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Page styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+            background-color: #2d333b; /* Dark background color */
+            color: #ffffff;
+        }
+
+        /* Header styling */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px 20px;
+            background-color: #ffffff; /* White background for header */
+            color: #000000; /* Black text color */
+            align-items: center;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        /* Container for Register Page */
+        .register-container {
+            max-width: 400px;
+            margin: 60px auto 0;
+            background-color: #3b3b3b; /* Dark gray for contrast */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #F6FCDF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styling */
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 16px;
+            color: #F6FCDF;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #859F3D;
+            border-radius: 5px;
+            background-color: #F6FCDF;
+            color: #31411E;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline-color: #859F3D;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #859F3D;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #31411E;
+        }
+
+        p {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        a {
+            color: #F6FCDF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header section -->
+    <header>
+        <div class="title">Home Page</div>
+    </header>
+
+    <!-- Registration form container -->
+    <div class="register-container">
+        <h2>Create a New Account</h2>
+        <form action="register.php" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="mobile">Mobile Number:</label>
+            <input type="text" id="mobile" name="mobile" required pattern="\d{10}" title="Please enter a valid 10-digit mobile number">
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+            
+            <button type="submit">Register</button>
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </form>
+    </div>
+</body>
+</html>

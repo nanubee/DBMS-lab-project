@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferences</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #3b3b3b; /* Dark background */
+            color: #31511E; /* Main text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .header {
+            font-size: 2em; /* Larger font size */
+            font-weight: bold;
+            color: #F6FCDF; /* Light text color */
+            text-align: center;
+            margin-bottom: 20px; /* Space below header */
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #859F3D; /* Container background */
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .preference {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #F6FCDF; /* Preference background */
+            border-radius: 4px;
+        }
+
+        .preference label {
+            margin-right: 10px;
+            color: #3b3b3b;
+            font-weight: bold;
+        }
+
+        .preference select, .preference input[type="text"], .preference input[type="checkbox"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #31511E;
+        }
+
+        .additional {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .additional label {
+            font-weight: bold;
+            color: #31511E;
+        }
+
+        button {
+            background-color: #31511E;
+            color: #F6FCDF;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 auto; /* Center the button horizontally */
+            display: block;
+        }
+
+        button:hover {
+            background-color: #31511E;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">Your journey, your rules. Choose your preferences!</div>
+
+<div class="container">
+    <div class="preference">
+        <label for="ac-temp">Air Conditioning:</label>
+        <select id="ac-temp" name="ac-temp">
+            <option value="off">Off</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+    </div>
+
+    <div class="preference">
+        <label for="silence">Silence/Chat Preference:</label>
+        <select id="silence" name="silence">
+            <option value="silence">Silence</option>
+            <option value="chat">Chat</option>
+        </select>
+    </div>
+
+    <div class="preference">
+        <label for="wifi">Wi-Fi:</label>
+        <input type="checkbox" id="wifi" name="wifi">
+    </div>
+
+    <!-- New checkbox for music in car with Bluetooth -->
+    <div class="preference">
+        <label for="bluetooth-music">Would you like to play music via Bluetooth in the car?</label>
+        <input type="checkbox" id="bluetooth-music" name="bluetooth-music">
+    </div>
+
+    <div class="additional">
+        <label for="additional">Additional Requirements:</label>
+        <input type="text" id="additional" name="additional" placeholder="Type any additional requirements">
+    </div>
+
+    <!-- Form to submit preferences -->
+    <form id="preferences-form" action="vehicle.php" method="POST">
+        <button type="submit">Submit Preferences</button>
+    </form>
+</div>
+
+</body>
+</html>
